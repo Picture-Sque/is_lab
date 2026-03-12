@@ -1,21 +1,24 @@
-key = [[3,3],[2,5]]
+key = [[17, 17, 5], [21, 18, 21], [2, 2, 19]]
+
+# Determine the size of the key matrix (n x n)
+n = len(key)
 
 text = input("Enter text: ").upper()
 
-# If length is odd add X
-if len(text) % 2 != 0:
+# If length is not a multiple of n, add 'X'
+while len(text) % n != 0:
     text += 'X'
 
 cipher = ""
 
-for i in range(0, len(text), 2):
-    a = ord(text[i]) - 65
-    b = ord(text[i+1]) - 65
-
-    c1 = (key[0][0]*a + key[0][1]*b) % 26
-    c2 = (key[1][0]*a + key[1][1]*b) % 26
-
-    cipher += chr(c1 + 65)
-    cipher += chr(c2 + 65)
+# Process text in blocks of n
+for i in range(0, len(text), n):
+    # Extract n characters and convert to 0-25
+    block = [ord(text[i+j]) - 65 for j in range(n)]
+    
+    # Multiply n x n matrix with the n x 1 column vector
+    for row in range(n):
+        c_val = sum(key[row][k] * block[k] for k in range(n)) % 26
+        cipher += chr(c_val + 65)
 
 print("Cipher Text:", cipher)
